@@ -1,0 +1,8 @@
+{
+  "name": "issue-550",
+  "module": "src/main.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
