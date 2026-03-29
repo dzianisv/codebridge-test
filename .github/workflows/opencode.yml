@@ -1,4 +1,4 @@
-name: opencode
+name: opencode-e2e-test
 
 on:
   issue_comment:
@@ -19,17 +19,31 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: Run opencode
-        uses: anomalyco/opencode/github@latest
-        with:
-          model: opencode/claude-sonnet
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
+      - name: Build opencode from fork
+        run: |
+          git clone --depth 1 --branch feat/github-issue-assignment https://github.com/dzianisv/opencode.git /tmp/opencode-src
+          cd /tmp/opencode-src
+          bun install --frozen-lockfile
+          cd packages/opencode
+          bun run build
+          mkdir -p ~/.opencode/bin
+          cp dist/opencode ~/.opencode/bin/opencode
+          chmod +x ~/.opencode/bin/opencode
+          echo "$HOME/.opencode/bin" >> $GITHUB_PATH
+
+      - name: Run opencode
+        run: opencode github run
+        env:
+          MODEL: opencode/claude-sonnet
