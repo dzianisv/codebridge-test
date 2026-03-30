@@ -41,5 +41,5 @@ jobs:
         working-directory: /tmp/opencode-src
         run: bun run --cwd packages/opencode --conditions=browser ./src/index.ts github run
         env:
-          MODEL: opencode/claude-sonnet
+          MODEL: opencode/gpt-5-nano
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
