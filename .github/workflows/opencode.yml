@@ -35,8 +35,15 @@ jobs:
           cd /tmp/opencode-src
           bun install --frozen-lockfile
 
-      - name: Run opencode github run from source
-        run: bun run --cwd /tmp/opencode-src/packages/opencode --conditions=browser ./src/index.ts github run
+      - name: Build opencode binary
+        run: |
+          cd /tmp/opencode-src/packages/opencode
+          bun run --conditions=browser script/build.ts
+          cp build/opencode-linux-x64/opencode /usr/local/bin/opencode
+          chmod +x /usr/local/bin/opencode
+
+      - name: Run opencode github run
+        run: opencode github run
         env:
           MODEL: opencode/gpt-5-nano
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
