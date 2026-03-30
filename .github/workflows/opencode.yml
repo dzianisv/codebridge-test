@@ -35,15 +35,17 @@ jobs:
           cd /tmp/opencode-src
           bun install --frozen-lockfile
 
-      - name: Build opencode binary
+      - name: Create opencode wrapper
         run: |
-          cd /tmp/opencode-src/packages/opencode
-          bun run --conditions=browser script/build.ts
-          cp build/opencode-linux-x64/opencode /usr/local/bin/opencode
-          chmod +x /usr/local/bin/opencode
+          cat > /tmp/opencode-run.ts << 'SCRIPT'
+          // Change cwd to GITHUB_WORKSPACE so opencode operates on the test repo
+          process.chdir(process.env.GITHUB_WORKSPACE!);
+          // Import and run opencode from source
+          await import("/tmp/opencode-src/packages/opencode/src/index.ts");
+          SCRIPT
 
       - name: Run opencode github run
-        run: opencode github run
+        run: bun run --conditions=browser /tmp/opencode-run.ts github run
         env:
           MODEL: opencode/gpt-5-nano
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
