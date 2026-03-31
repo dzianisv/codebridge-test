@@ -1,0 +1,8 @@
+{
+  "name": "issue-589",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "bun test"
+  }
+}
