@@ -1,0 +1,9 @@
+{
+  "name": "issue-608",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "start": "bun run src/main.ts"
+  }
+}
